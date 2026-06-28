@@ -1,5 +1,6 @@
 package com.example.Student.services;
 
+import com.example.Student.StudentRepository;
 import com.example.Student.model.student;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -10,40 +11,45 @@ import java.util.List;
 @Service
 public class studentService {
 
-    private ArrayList<student> students = new ArrayList<>();
-    int idcount = 1;
+    public student student;
 
-    public student addStudent(student student){
-        student.setId(idcount);
-        idcount++;
-        students.add(student);
-        return student;
+    private final StudentRepository studentrepository;
+
+    public studentService(StudentRepository studentrepository){
+        this.studentrepository = studentrepository;
     }
 
-    public List<student> getAll(){
-        return students;
+    public student addstudent(student student){
+        return studentrepository.save(student);
+    }
+
+    public List<student> getAllStudent(){
+        return studentrepository.findAll();
+    }
+
+    public student getById(int id){
+        return studentrepository.findById(id).orElse(null);
     }
 
     public student update(int id, student newstudent){
-        for(student student : students){
-            if(newstudent.getId() == id){
-                newstudent.setname(newstudent.getname());
-                newstudent.setcity(newstudent.getcity());
-                newstudent.setage(newstudent.getage());
-                return student;
-            }
+        student = studentrepository.findById(id).orElse(null);
+        if(student == null) {
+            return null;
         }
-        return null;
+        student.setName(newstudent.getName());
+        student.setAge(newstudent.getAge());
+        student.setCity(newstudent.getCity());
+
+        return studentrepository.save(student);
     }
 
     public String delete(int id){
-        for (student student : students){
-            if(student.getId() == id){
-                students.remove(student);
-                return "Student deleted Successfully";
-            }
+        if(studentrepository.existsById(id)){
+            studentrepository.deleteById(id);
+            return "Student Deleted Successfully";
+        }else{
+            return "Student Not Found";
         }
-        return "Student not found";
     }
 
 }

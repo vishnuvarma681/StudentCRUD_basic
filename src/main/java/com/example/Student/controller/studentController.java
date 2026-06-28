@@ -17,12 +17,12 @@ public class studentController {
 
     @PostMapping("/add")
     public student addstudent(@RequestBody student student){
-        return studentService.addStudent(student);
+        return studentService.addstudent(student);
     }
 
     @GetMapping("/all")
     public List<student> getall(){
-        return studentService.getAll();
+        return studentService.getAllStudent();
     }
 
     @PutMapping("/update/{id}")
@@ -30,7 +30,7 @@ public class studentController {
         return studentService.update(id,newstudent);
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable int id){
         return studentService.delete(id);
     }
